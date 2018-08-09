@@ -7,7 +7,7 @@ class UserController {
     let users = [];
     users = await userModel.findAll();
     if (users.length >= 0) {
-      console.log('users.length', users.length);
+      console.log("users.length", users.length);
       res.json(users);
     } else next(404);
   }
@@ -68,17 +68,16 @@ class UserController {
   }
 
   async register(req, res, next) {
-
     const payload = getPayload(req);
-    console.log("payload", payload, 'req.body',req.body)
+    console.log("payload", payload, "req.body", req.body);
     userModel
       .create(payload)
       .then((result, model) => {
-        console.log('new user registered')
+        console.log("new user registered");
       })
       .catch(err => {
-        console.log('could not register user',err.message);
-        next()
+        console.log("could not register user", err.message);
+        next();
       });
   }
 }

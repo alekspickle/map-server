@@ -12,44 +12,43 @@ module.exports = (sequelize, DataTypes) => {
   };
   const model = {
     name: {
-        type: DataTypes.STRING,
-        validate: {
-            notEmpty: true
-        },
-        allowNull: false,
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true
+      },
+      allowNull: false
     },
     type: {
-        type: DataTypes.STRING,
-        validate: {
-            isAlphanumeric: true
-        }
+      type: DataTypes.STRING,
+      validate: {
+        isAlphanumeric: true
+      }
     },
     lat: {
-        type: DataTypes.DECIMAL(20, 10),
-        validate: {
-            isFloat: true,
-            notEmpty: true
-        },
-        allowNull: false,
+      type: DataTypes.DECIMAL(20, 10),
+      validate: {
+        isFloat: true,
+        notEmpty: true
+      },
+      allowNull: false
     },
     lng: {
-        type: DataTypes.DECIMAL(20, 10),
-        validate: {
-            isFloat: true,
-            notEmpty: true
-        },
-        allowNull: false,
-    },
-    
-    user_id: {
-        type: DataTypes.INTEGER,
-        validate: {
-            notEmpty: true
-        },
-        allowNull: false,
+      type: DataTypes.DECIMAL(20, 10),
+      validate: {
+        isFloat: true,
+        notEmpty: true
+      },
+      allowNull: false
     },
 
-};
-  const Location = sequelize.define("Location", model, {classMethods});
+    user_id: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: true
+      },
+      allowNull: false
+    }
+  };
+  const Location = sequelize.define("Location", model, { classMethods });
   return Location;
 };

@@ -13,19 +13,20 @@ let sequelize;
 if (config.get("use_env_variable") && env === "production") {
   sequelize = new Sequelize(process.env[config.get("use_env_variable")]);
 } else {
-  sequelize = new Sequelize('mainDB', null, null,{
+  sequelize = new Sequelize("mainDB", null, null, {
     dialect: config.get("development").dialect,
     storage: config.get("development").storage
   });
 }
 
-sequelize
-  .authenticate()
-  .then(function(err) {
-    console.log('DB connection has been established successfully.');
-  }, function (err) {
-    console.log('Unable to connect to the database:', err);
-  });
+sequelize.authenticate().then(
+  function(err) {
+    console.log("DB connection has been established successfully.");
+  },
+  function(err) {
+    console.log("Unable to connect to the database:", err);
+  }
+);
 
 fs.readdirSync(__dirname)
   .filter(file => {
