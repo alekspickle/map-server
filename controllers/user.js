@@ -3,34 +3,20 @@ const locationModel = require("../models").Location;
 const getPayload = require("./payload");
 
 class UserController {
-  async index(req, res, next) {
+  async getAll(req, res, next) {
     let users = [];
+    console.log("hello from server");
     users = await userModel.findAll();
     if (users.length >= 0) {
-      console.log(users.length);
+      console.log('users.length', users.length);
       res.json(users);
     } else next(404);
-  }
-
-  async create(req, res, next) {
-    const payload = getPayload(req);
-    userModel
-      .create(payload)
-      .then((result, model) => {
-        res.status(201).json({
-          message: "success",
-          data: result
-        });
-      })
-      .catch(err => {
-        next(err);
-      });
   }
 
   async delete(req, res, next) {
     const changes = await userModel.destroy({
       where: {
-        id: req.params.nick
+        id: req.params.id
       }
     });
     if (changes > 0) {
@@ -43,7 +29,7 @@ class UserController {
   }
 
   async indexLocation(req, res, next) {
-    const user = await userModel.findById(req.params.nick, {
+    const user = await userModel.findById(req.params.id, {
       include: [
         {
           model: locationModel,
@@ -59,7 +45,7 @@ class UserController {
   async detailLocation(req, res, next) {
     const location = await locationModel.find({
       where: {
-        UserId: req.params.nick,
+        user_id: req.params.id,
         id: req.params.id
       }
     });
@@ -69,7 +55,7 @@ class UserController {
     } else next(404);
   }
 
-  async authLogin(req, res, next) {
+  async login(req, res, next) {
     const user = await userModel.findOne({
       where: {
         email: req.body.email
@@ -82,7 +68,9 @@ class UserController {
     }
   }
 
-  async authRegister(req, res, next) {
+  async register(req, res, next) {
+    console.log("hello from server");
+
     const payload = getPayload(req);
     userModel
       .create(payload)

@@ -40,6 +40,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowNull: false,
     },
+    
+    user_id: {
+        type: DataTypes.INTEGER,
+        validate: {
+            notEmpty: true
+        },
+        allowNull: false,
+    },
+
 };
   const Location = sequelize.define("Location", model, {classMethods});
   return Location;

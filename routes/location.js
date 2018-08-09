@@ -1,13 +1,13 @@
 const router = require('express').Router();
-const locationController = require('../controllers/LocationController');
+const locationController = require('../controllers/location');
 
 router.route('/')
-    .get(locationController.index)
+    .get(locationController.getAll)
     .post(locationController.create);
 
 router.route('/:id')
-    .get(locationController.detail)
-    .put(locationController.edit)
+    .get(locationController.getLocation)
+    .put(locationController.update)
     .delete(locationController.delete);
 
 module.exports = router;

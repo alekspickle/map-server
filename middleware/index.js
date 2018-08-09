@@ -2,8 +2,7 @@ module.exports = function (app, express) {
 
     const bodyParser = require('body-parser');
     const routes = require('../routes');
-    const errorHandler = require('./error.handler')(app);
-
+    const errorHandler = require('./error_handler')(app);
 
     app.use((req, res, next) => {
         res.header("Access-Control-Allow-Origin", "*");
@@ -12,10 +11,9 @@ module.exports = function (app, express) {
         next();
     });
 
-
     app.use(bodyParser.urlencoded({extended: true}));
     app.use(bodyParser.json());
 
-    app.use('/api/', routes);
+    app.use('/api', routes);
     app.use(errorHandler);
 }

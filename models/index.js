@@ -6,25 +6,23 @@ const Sequelize = require("sequelize");
 const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require("../config");
-const db = require("../db");
+const db = {};
 
 let sequelize;
-
-console.log(config.get("use_env_variable"));
 
 if (config.get("use_env_variable") && env === "production") {
   sequelize = new Sequelize(process.env[config.get("use_env_variable")]);
 } else {
   sequelize = new Sequelize('mainDB', null, null,{
     dialect: config.get("development").dialect,
-    storage: config.get("production").storage
+    storage: config.get("development").storage
   });
 }
 
 sequelize
   .authenticate()
   .then(function(err) {
-    console.log('Connection has been established successfully.');
+    console.log('DB connection has been established successfully.');
   }, function (err) {
     console.log('Unable to connect to the database:', err);
   });

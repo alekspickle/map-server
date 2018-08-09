@@ -3,7 +3,7 @@ const getPayload = require('./payload');
 
 
 class LocationController {
-    async index(req, res, next){
+    async getAll(req, res, next){
         let locations = [];
         locations = await locationModel.findAll();
 
@@ -12,7 +12,7 @@ class LocationController {
         } else next(404)
     }
 
-    async detail(req, res, next){
+    async getLocation(req, res, next){
         const location = await locationModel.findById(req.params.id);
 
         if (location){
@@ -22,7 +22,7 @@ class LocationController {
         }
     }
 
-    async edit(req, res, next){
+    async update(req, res, next){
         const payload = getPayload(req);
         const location = await locationModel.findById(req.params.id);
         location.update(payload).then((result, model) => {

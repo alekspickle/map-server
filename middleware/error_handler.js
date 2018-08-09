@@ -5,6 +5,7 @@ const _ = require('lodash');
 const errors = {
     404: new createError.NotFound(["User not found"]),
     401: new createError.Unauthorized(['You should login']),
+    400: new createError.BadRequest(['No data']),
     500: new createError.InternalServerError(),
     406: new createError.NotAcceptable()
 };
@@ -25,6 +26,7 @@ function checkInstance(err){
 
 module.exports = function (app) {
     return function (err, req, res, next){
+    console.log("hello from server errors");
 
         if (typeof err === 'number') {
             err = errors[err];
@@ -38,7 +40,7 @@ module.exports = function (app) {
                 sendHttpError(createError.NotAcceptable(_.map(err.errors, 'message')), res);
                 break;
             case 'database_error':
-                sendHttpError(createError.NotAcceptable(['Oops, some-thing wrong with service']), res);
+                sendHttpError(createError.NotAcceptable(['something went wrong with service']), res);
                 break;
             default:
                 if (app.get('env') === 'development') {
@@ -46,7 +48,7 @@ module.exports = function (app) {
                 } else {
                     if (err){
                         sendHttpError(err, res);
-                    } else sendHttpError(createError.ServiceUnavailable(['Oops, some-thing wrong with service']), res);
+                    } else sendHttpError(createError.ServiceUnavailable(['something went wrong with service']), res);
                 }
                 break;
         }
