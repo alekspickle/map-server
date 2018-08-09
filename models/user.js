@@ -19,6 +19,14 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   const model = {
+    email: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: true,
+        isEmail: true,
+        len: [3, 10]
+      }
+    },
     name: {
       type: DataTypes.STRING,
       unique: true,
@@ -42,14 +50,6 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       allowNull: false
-    },
-    email: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: true,
-        isEmail: true,
-        len: [3, 10]
-      }
     }
   };
 
@@ -57,7 +57,7 @@ module.exports = (sequelize, DataTypes) => {
     classMethods,
     instanceMethods
   });
-  
+
   User.beforeCreate(user => {
     return bCrypt
       .hash(user.password, saltRounds)

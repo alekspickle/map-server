@@ -5,7 +5,6 @@ const getPayload = require("./payload");
 class UserController {
   async getAll(req, res, next) {
     let users = [];
-    console.log("hello from server");
     users = await userModel.findAll();
     if (users.length >= 0) {
       console.log('users.length', users.length);
@@ -69,16 +68,17 @@ class UserController {
   }
 
   async register(req, res, next) {
-    console.log("hello from server");
 
     const payload = getPayload(req);
+    console.log("payload", payload, 'req.body',req.body)
     userModel
       .create(payload)
       .then((result, model) => {
         console.log('new user registered')
       })
       .catch(err => {
-        next('could not register user',err);
+        console.log('could not register user',err.message);
+        next()
       });
   }
 }
