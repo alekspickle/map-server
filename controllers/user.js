@@ -66,8 +66,8 @@ class UserController {
       next(404);
     } else {
       user.checkPassword(req.body.password, user.password, (e, result) => {
-        console.log("compare result", e, result);
-        if (result) return res.status(200).send({login: true});
+        console.log("compare result", result);
+        if (result) return res.status(200).send({login: true, user: user});
 
         res.sendStatus(401);
 
