@@ -12,7 +12,7 @@ const errors = {
 
 const sendHttpError = function(err, res) {
   err.status ? res.status(err.status) : res.status(500);
-  console.log(err);
+  console.log(err.message);
   res.json(err);
 };
 

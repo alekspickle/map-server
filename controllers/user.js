@@ -1,6 +1,7 @@
 const userModel = require("../models").User;
 const locationModel = require("../models").Location;
 const getPayload = require("./payload");
+const bCrypt = require("bcrypt");
 
 class UserController {
   async getAll(req, res, next) {
@@ -60,19 +61,27 @@ class UserController {
         email: req.body.email
       }
     });
+    // console.log("user", user)
     if (!user) {
       next(404);
     } else {
-      user.checkPassword(req.body.password, user.password);
+      user.checkPassword(req.body.password, user.password, (e, result) => {
+        console.log("compare result", e, result);
+        if (result) return res.status(200).send({login: true});
+
+        res.sendStatus(401);
+
+      });
     }
   }
 
   async register(req, res, next) {
     const payload = getPayload(req);
-    console.log("payload", payload, "req.body", req.body);
+    // console.log("payload", payload, "req.body", req.body);
     userModel
       .create(payload)
       .then((result, model) => {
+        res.status(200).send({ registered: true });
         console.log("new user registered");
       })
       .catch(err => {
