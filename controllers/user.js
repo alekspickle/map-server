@@ -1,7 +1,7 @@
 const userModel = require("../models").User;
+const UserModel = require("../models/userMongo");
 const locationModel = require("../models").Location;
 const getPayload = require("./payload");
-const bCrypt = require("bcrypt");
 
 class UserController {
   async getAll(req, res, next) {
@@ -67,10 +67,9 @@ class UserController {
     } else {
       user.checkPassword(req.body.password, user.password, (e, result) => {
         console.log("compare result", result);
-        if (result) return res.status(200).send({login: true, user: user});
+        if (result) return res.status(200).send({ login: true, user: user });
 
         res.sendStatus(401);
-
       });
     }
   }
@@ -88,6 +87,22 @@ class UserController {
         console.log("could not register user", err.message);
         next();
       });
+  }
+  async loginMongo(req, res, next) {}
+
+  async registerMongo(req, res, next) {
+    let user = new UserModel({
+      email: req.body.email,
+      name: req.body.name,
+      password: req.body.password
+    });
+
+    user.save(err => {
+      if (err) {
+        return next(err);
+      }
+      res.send("User Created successfully");
+    });
   }
 }
 
