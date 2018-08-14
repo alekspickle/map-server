@@ -1,5 +1,4 @@
 const locationModel = require("../models").Location;
-const getPayload = require("./payload");
 
 class LocationController {
   async getAll(req, res, next) {

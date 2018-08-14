@@ -1,54 +1,26 @@
-"use strict";
-module.exports = (sequelize, DataTypes) => {
-  const classMethods = {
-    associate: models => {
-      models.Location.belongsTo(models.User, {
-        onDelete: "CASCADE",
-        foreignKey: {
-          allowNull: false
-        }
-      });
-    }
-  };
-  const model = {
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
+
+let LocationSchema = new Schema(
+  {
     name: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: true
-      },
-      allowNull: false
+      type: String, required: true
     },
     type: {
-      type: DataTypes.STRING,
-      validate: {
-        isAlphanumeric: true
-      }
+      type: String
     },
     lat: {
-      type: DataTypes.DECIMAL(20, 10),
-      validate: {
-        isFloat: true,
-        notEmpty: true
-      },
-      allowNull: false
+      type: Number, required: true
     },
     lng: {
-      type: DataTypes.DECIMAL(20, 10),
-      validate: {
-        isFloat: true,
-        notEmpty: true
-      },
-      allowNull: false
+      type: Number, required: true
     },
 
     user_id: {
-      type: DataTypes.INTEGER,
-      validate: {
-        notEmpty: true
-      },
-      allowNull: false
-    }
-  };
-  const Location = sequelize.define("Location", model, { classMethods });
-  return Location;
-};
+      type: Number, required: true
+      }
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model("Location", LocationSchema);

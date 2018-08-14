@@ -1,12 +1,10 @@
 const userModel = require("../models").User;
-const UserModel = require("../models/userMongo");
-const locationModel = require("../models").Location;
-const getPayload = require("./payload");
+const checkPassword = require(".././helpers/passHelper");
 
 class UserController {
   async getAll(req, res, next) {
     let users = [];
-    users = await userModel.findAll();
+    users = await userModel.find();
     if (users.length >= 0) {
       console.log("users.length", users.length);
       res.json(users);
@@ -57,15 +55,13 @@ class UserController {
 
   async login(req, res, next) {
     const user = await userModel.findOne({
-      where: {
-        email: req.body.email
-      }
+      email: req.body.email
     });
     // console.log("user", user)
     if (!user) {
       next(404);
     } else {
-      user.checkPassword(req.body.password, user.password, (e, result) => {
+      checkPassword(req.body.password, user.password, (e, result) => {
         console.log("compare result", result);
         if (result) return res.status(200).send({ login: true, user: user });
 
@@ -75,23 +71,7 @@ class UserController {
   }
 
   async register(req, res, next) {
-    const payload = getPayload(req);
-    // console.log("payload", payload, "req.body", req.body);
-    userModel
-      .create(payload)
-      .then((result, model) => {
-        res.status(200).send({ registered: true });
-        console.log("new user registered");
-      })
-      .catch(err => {
-        console.log("could not register user", err.message);
-        next();
-      });
-  }
-  async loginMongo(req, res, next) {}
-
-  async registerMongo(req, res, next) {
-    let user = new UserModel({
+    let user = new userModel({
       email: req.body.email,
       name: req.body.name,
       password: req.body.password
