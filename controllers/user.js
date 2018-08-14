@@ -1,5 +1,7 @@
+const bCrypt = require("bcrypt");
 const userModel = require("../models").User;
 const checkPassword = require(".././helpers/passHelper");
+const saltRounds = 10;
 
 class UserController {
   async getAll(req, res, next) {
@@ -8,48 +10,6 @@ class UserController {
     if (users.length >= 0) {
       console.log("users.length", users.length);
       res.json(users);
-    } else next(404);
-  }
-
-  async delete(req, res, next) {
-    const changes = await userModel.destroy({
-      where: {
-        id: req.params.id
-      }
-    });
-    if (changes > 0) {
-      res.status(204).json({
-        message: "success"
-      });
-    } else {
-      next(500);
-    }
-  }
-
-  async indexLocation(req, res, next) {
-    const user = await userModel.findById(req.params.id, {
-      include: [
-        {
-          model: locationModel,
-          as: "Locations"
-        }
-      ]
-    });
-    if (user) {
-      res.json(user);
-    } else next(404);
-  }
-
-  async detailLocation(req, res, next) {
-    const location = await locationModel.find({
-      where: {
-        user_id: req.params.id,
-        id: req.params.id
-      }
-    });
-
-    if (location) {
-      res.json(location);
     } else next(404);
   }
 
@@ -71,10 +31,18 @@ class UserController {
   }
 
   async register(req, res, next) {
-    let user = new userModel({
-      email: req.body.email,
-      name: req.body.name,
-      password: req.body.password
+    const { email, name, password } = req.body;
+    if (!email || !name || !password) return res.sendStatus(500);
+    const isExist = await userModel.findOne({ email: email });
+    if (isExist) return res.sendStatus(418);
+
+    const encrypted = await bCrypt.hash(password, saltRounds);
+    console.log("encrypted", password, encrypted);
+
+    let user = await userModel.create({
+      email: email,
+      name: name,
+      password: encrypted
     });
 
     user.save(err => {
@@ -83,6 +51,22 @@ class UserController {
       }
       res.send("User Created successfully");
     });
+  }
+
+  async delete(req, res, next) {
+    const changes = await userModel.deleteOne({
+      _id: req.params.id
+    });
+
+    console.log("delete user result", changes);
+
+    if (changes > 0) {
+      res.status(204).json({
+        message: "success"
+      });
+    } else {
+      next(500);
+    }
   }
 }
 

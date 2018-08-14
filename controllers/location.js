@@ -3,21 +3,18 @@ const locationModel = require("../models").Location;
 class LocationController {
   async getAll(req, res, next) {
     let locations = [];
-    locations = await locationModel.findAll();
+    locations = await locationModel.find();
 
     if (locations.length >= 0) {
       res.json(locations);
     } else next(404);
   }
 
-  async getLocation(req, res, next) {
-    const location = await locationModel.findById(req.params.id);
-
-    if (location) {
-      res.json(location);
-    } else {
-      next(404);
-    }
+  async saveNewLocations(req, res, next) {
+    userModel.create([req.body.locations], err => {
+      if (err) return next(404);
+      else res.json({ saved: true });
+    });
   }
 
   async update(req, res, next) {
@@ -36,29 +33,12 @@ class LocationController {
       });
   }
 
-  async create(req, res, next) {
-    const payload = getPayload(req);
-    locationModel
-      .create(payload)
-      .then((result, model) => {
-        res.status(201).json({
-          message: "success",
-          data: result
-        });
-      })
-      .catch(err => {
-        next(err);
-      });
-  }
-
   async delete(req, res, next) {
-    const changes = await locationModel.destroy({
-      where: {
-        id: req.params.id
-      }
+    const changes = await locationModel.deleteOne({
+      id: req.params.id
     });
-
-    if (changes > 0) {
+    console.log("delete location result", changes);
+    if (changes) {
       res.status(204).json({
         message: "success"
       });

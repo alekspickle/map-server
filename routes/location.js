@@ -4,11 +4,12 @@ const locationController = require("../controllers/location");
 router
   .route("/")
   .get(locationController.getAll)
-  .post(locationController.create);
+router
+  .route("/save")
+  .get(locationController.saveNewLocations)
 
 router
   .route("/:id")
-  .get(locationController.getLocation)
   .put(locationController.update)
   .delete(locationController.delete);
 
