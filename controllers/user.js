@@ -1,5 +1,6 @@
 const bCrypt = require("bcrypt");
 const userModel = require("../models").User;
+const locationModel = require("../models").Location;
 const checkPassword = require(".././helpers/passHelper");
 const saltRounds = 10;
 
@@ -13,10 +14,44 @@ class UserController {
     } else next(404);
   }
 
+  async check(req, res, next) {
+    const user = await userModel.find(e => {
+      if (e) return res.status(e.status).send(e.message);
+    });
+    // const location = await locationModel.find(err => {
+    //   if (err) return res.status(e.status).send(e.message);
+    // });
+    res.send({ users: user, locs: location });
+  }
+
   async login(req, res, next) {
     const user = await userModel.findOne({
       email: req.body.email
     });
+    // console.log("user", user)
+    if (!user) {
+      next(404);
+    } else {
+      checkPassword(req.body.password, user.password, (e, result) => {
+        console.log("compare result", result);
+        if (result) return res.status(200).send({ login: true, user: user });
+
+        res.sendStatus(401);
+      });
+    }
+  }
+
+  async update(req, res, next) {
+    const user = await userModel.findOneAndUpdate(
+      {
+        email: req.body.email
+      },
+      req.body,
+      (err, updated) => {
+        if (err) console.log("could not update user", err);
+        return;
+      }
+    );
     // console.log("user", user)
     if (!user) {
       next(404);
@@ -54,19 +89,10 @@ class UserController {
   }
 
   async delete(req, res, next) {
-    const changes = await userModel.deleteOne({
-      _id: req.params.id
+    const changes = await userModel.findByIdAndRemove(req.params.id, err => {
+      if (err) return next(err);
+      res.send("Deleted successfully!");
     });
-
-    console.log("delete user result", changes);
-
-    if (changes > 0) {
-      res.status(204).json({
-        message: "success"
-      });
-    } else {
-      next(500);
-    }
   }
 }
 

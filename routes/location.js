@@ -6,7 +6,7 @@ router
   .get(locationController.getAll)
 router
   .route("/save")
-  .get(locationController.saveNewLocations)
+  .post(locationController.saveNewLocations)
 
 router
   .route("/:id")
