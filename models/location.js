@@ -4,21 +4,26 @@ const Schema = mongoose.Schema;
 let LocationSchema = new Schema(
   {
     name: {
-      type: String, required: true
+      type: String,
+      required: true
     },
     type: {
-      type: String
+      type: String,
+      required: true
     },
     lat: {
-      type: Number, required: true
+      type: Number,
+      required: true
     },
     lng: {
-      type: Number, required: true
+      type: Number,
+      required: true
     },
 
     user_id: {
-      type: Number, required: true
-      }
+      type: String,
+      required: true
+    }
   },
   { timestamps: true }
 );

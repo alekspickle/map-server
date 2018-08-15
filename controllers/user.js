@@ -16,11 +16,11 @@ class UserController {
 
   async check(req, res, next) {
     const user = await userModel.find(e => {
-      if (e) return res.status(e.status).send(e.message);
+      
     });
-    // const location = await locationModel.find(err => {
-    //   if (err) return res.status(e.status).send(e.message);
-    // });
+    const location = await locationModel.find(err => {
+      // if (err) return res.status(e.status).send(e.message);
+    });
     res.send({ users: user, locs: location });
   }
 

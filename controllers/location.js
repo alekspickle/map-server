@@ -11,9 +11,11 @@ class LocationController {
   }
 
   async saveNewLocations(req, res, next) {
-    userModel.create([req.body.locations], err => {
+    console.log('req.body.locations', req.body.locations)
+    const locations = await locationModel.create(req.body.locations, err => {
+      console.log("cannot save locations",err)
       if (err) return next(404);
-      else res.json({ saved: true });
+      else res.json({ saved: true, locations });
     });
   }
 
