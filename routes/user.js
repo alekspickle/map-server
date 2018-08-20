@@ -1,7 +1,9 @@
 const router = require("express").Router();
 const userController = require("../controllers/user");
 
-router.route("/check").post(userController.check);
+// console.log("enter routes");
+
+router.route("/check").get(userController.check);
 
 router.route("/login").post(userController.login);
 
