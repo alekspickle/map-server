@@ -10,6 +10,7 @@ router
 
 router
   .route("/:id")
+  .get(locationController.getUserLocations)
   .put(locationController.update)
   .delete(locationController.delete);
 
