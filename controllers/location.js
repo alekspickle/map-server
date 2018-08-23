@@ -11,20 +11,16 @@ class LocationController {
   }
 
   async saveNewLocations(req, res, next) {
+    if(!req.body.locations) return next(400)
     const reqLocations = req.body.locations;
-    console.log(
-      "req.body.locations type",
-      typeof reqLocations,
-      Array.isArray(reqLocations)
-    );
+    let newLocs = [];
+
     reqLocations.forEach(el => {
-      // console.log("el._id", el._id); 
-
+      // console.log("el._id", el._id); //TEST
       if (el._id) return; //if there is such id exit
-
       const location = new Location(el);
       location.save((err, loc) => {
-        console.log("saved location", loc);
+        newLocs.push(loc);
         if (err) {
           console.log("cannot save location", err.message);
           return next(err);
@@ -32,14 +28,9 @@ class LocationController {
       });
     });
 
-    //   err => {
-    //     console.log("cannot save locations", err);
-    //     if (err) return next(404);
-    //     else res.status(200).json({ saved: true, locations });
-    //     // else res.json({ saved: true, locations });
-    //   }
-    // );
-    res.send("lol");
+    console.log("saved locations", newLocs);
+    if (!newLocs.length) return res.send({ inserted: false });
+    return res.send({ inserted: newLocs });
   }
 
   async getUserLocations(req, res, next) {
