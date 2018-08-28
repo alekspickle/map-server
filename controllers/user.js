@@ -32,7 +32,7 @@ class UserController {
       next(404);
     } else {
       checkPassword(req.body.password, user.password, (e, result) => {
-        console.log("compare result", result);
+        // console.log("password is correct:", result);
         if (result) return res.status(200).send({ login: true, user: user });
 
         res.sendStatus(401);
@@ -55,12 +55,8 @@ class UserController {
     if (!user) {
       next(404);
     } else {
-      checkPassword(req.body.password, user.password, (e, result) => {
-        console.log("compare result", result);
-        if (result) return res.status(200).send({ login: true, user: user });
-
-        res.sendStatus(401);
-      });
+      console.log("user updated", user)
+      // res.status(200).send({user})
     }
   }
 
