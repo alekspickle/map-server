@@ -35,7 +35,7 @@ class LocationController {
 
   async getUserLocations(req, res, next) {
     const locations = await Location.find({ user_id: req.params.id });
-    console.log("user locations", locations);
+    // console.log("user locations", locations);
     res.send({ locations });
   }
 
