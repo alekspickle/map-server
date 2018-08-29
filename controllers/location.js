@@ -20,6 +20,7 @@ class LocationController {
       if (el._id) return; //if there is such id exit
       const location = new Location(el);
       location.save((err, loc) => {
+        console.log(loc);
         newLocs.push(loc); //TEST
         if (err) {
           console.log("cannot save location", err.message);
@@ -56,17 +57,18 @@ class LocationController {
   }
 
   async delete(req, res, next) {
-    const changes = await Location.deleteOne({
-      id: req.params.id
-    });
-    console.log("delete location result", changes);
-    if (changes) {
-      res.status(204).json({
-        message: "success"
-      });
-    } else {
-      next(500);
-    }
+    console.log('req.params', req.params)
+    // const changes = await Location.deleteOne({
+    //   id: req.params.id
+    // });
+    // console.log("delete location result", changes);
+    // if (changes) {
+    //   res.status(204).json({
+    //     message: "success"
+    //   });
+    // } else {
+    //   next(500);
+    // }
   }
 }
 
