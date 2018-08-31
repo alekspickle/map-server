@@ -11,27 +11,20 @@ class LocationController {
   }
 
   async saveNewLocations(req, res, next) {
-    if(!req.body.locations) return next(400)
+    if (!req.body.locations) return next(400);
     const reqLocations = req.body.locations;
-    let newLocs = []; //TEST
 
     reqLocations.forEach(el => {
-      // console.log("el._id", el._id); //TEST
       if (el._id) return; //if there is such id exit
       const location = new Location(el);
       location.save((err, loc) => {
-        console.log(loc);
-        newLocs.push(loc); //TEST
         if (err) {
           console.log("cannot save location", err.message);
           return next(err);
         }
+        console.log(loc);
       });
     });
-
-    console.log("saved locations", newLocs); //TEST
-    if (!newLocs.length) return res.send({ inserted: false });
-    return res.send({ inserted: newLocs });
   }
 
   async getUserLocations(req, res, next) {
@@ -41,7 +34,6 @@ class LocationController {
   }
 
   async update(req, res, next) {
-    const payload = getPayload(req);
     const location = await Location.findById(req.params.id);
     location
       .update(payload)
@@ -57,18 +49,17 @@ class LocationController {
   }
 
   async delete(req, res, next) {
-    console.log('req.params', req.params)
-    // const changes = await Location.deleteOne({
-    //   id: req.params.id
-    // });
-    // console.log("delete location result", changes);
-    // if (changes) {
-    //   res.status(204).json({
-    //     message: "success"
-    //   });
-    // } else {
-    //   next(500);
-    // }
+    console.log("req.params", req.params);
+    await Location.findByIdAndDelete(
+      {
+        _id: req.params.id
+      },
+      (err, deleted) => {
+        console.log("deleted", deleted);
+        if (err) return next(400);
+        res.send(deleted);
+      }
+    );
   }
 }
 

@@ -14,9 +14,8 @@ class UserController {
   }
 
   async check(req, res, next) {
-    const user = await User.find( e => {
-    });
-    const location = await Location.find( err => {
+    const user = await User.find(e => {});
+    const location = await Location.find(err => {
       // if (err) return res.status(e.status).send(e.message);
     });
 
@@ -55,21 +54,21 @@ class UserController {
     if (!user) {
       next(404);
     } else {
-      console.log("user updated", user)
+      console.log("user updated", user);
       // res.status(200).send({user})
     }
   }
 
   async register(req, res, next) {
     const { email, name, password } = req.body;
-    if (!email || !name || !password) return res.sendStatus(500);
+    if (!email || !name || !password) return res.sendStatus(400);
     const isExist = await User.findOne({ email: email });
     if (isExist) return res.sendStatus(418);
 
     const encrypted = await bCrypt.hash(password, saltRounds);
     console.log("encrypted", password, encrypted);
 
-    let user = await User.create({
+    const user = await new User({
       email: email,
       name: name,
       password: encrypted
@@ -84,10 +83,13 @@ class UserController {
   }
 
   async delete(req, res, next) {
-    const changes = await User.findByIdAndRemove(req.params.id, err => {
-      if (err) return next(err);
-      res.send("Deleted successfully!");
-    });
+    const changes = await User.findByIdAndDelete(
+      req.params.id,
+      (err, deleted) => {
+        if (err) return next(err);
+        res.send({ deleted, msg: "Deleted successfully!" });
+      }
+    );
   }
 }
 
