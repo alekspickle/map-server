@@ -22,7 +22,7 @@ class LocationController {
           console.log("cannot save location", err.message);
           return next(err);
         }
-        console.log(loc);
+        console.log("saved ", loc);
       });
     });
   }
