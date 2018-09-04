@@ -13,9 +13,13 @@ class LocationController {
   async saveNewLocations(req, res, next) {
     if (!req.body.locations) return next(400);
     const reqLocations = req.body.locations;
-
+    let existed = reqLocations.map(el => {
+      return { lat: el["lat"], lng: el["lng"], name: el["name"] };
+    });
+    console.log("is exist", existed);
+    
     reqLocations.forEach(el => {
-      if (el._id) return; //if there is such id exit
+      if (el._id) return; //reject condition
       const location = new Location(el);
       location.save((err, loc) => {
         if (err) {
@@ -23,6 +27,7 @@ class LocationController {
           return next(err);
         }
         console.log("saved ", loc);
+        res.send(loc)
       });
     });
   }
