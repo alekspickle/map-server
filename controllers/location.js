@@ -13,15 +13,17 @@ class LocationController {
   async saveNewLocations(req, res, next) {
     if (!req.body.locations) return next(400);
     const reqLocations = req.body.locations;
+    const saved = [];
     const userLocations = await Location.find({
       user_id: reqLocations[0].user_id
     });
     let existed = userLocations.map(el => {
       return { lat: el["lat"], lng: el["lng"] };
     });
-    console.log("is exist", existed);
+    console.log("existed", existed);
     reqLocations.forEach(el => {
-      if (existed.includes({ lat: el.lat, lng: el.lng })) return; //reject condition
+      const isTrue = el._id || existed.includes({ lat: el.lat, lng: el.lng });
+      if (isTrue) return; //reject condition
       const location = new Location(el);
       location.save((err, loc) => {
         if (err) {
@@ -29,9 +31,10 @@ class LocationController {
           return next(err);
         }
         console.log("saved ", loc);
-        res.send(loc);
+        saved.push(loc);
       });
     });
+    res.send(saved);
   }
 
   async getUserLocations(req, res, next) {
