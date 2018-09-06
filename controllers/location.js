@@ -21,20 +21,27 @@ class LocationController {
       return { lat: el["lat"], lng: el["lng"] };
     });
     console.log("existed", existed);
-    reqLocations.forEach(el => {
-      const isTrue = el._id || existed.includes({ lat: el.lat, lng: el.lng });
-      if (isTrue) return; //reject condition
-      const location = new Location(el);
-      location.save((err, loc) => {
-        if (err) {
-          console.log("cannot save location", err.message);
-          return next(err);
-        }
-        console.log("saved ", loc);
-        saved.push(loc);
-      });
+    const promises = reqLocations.map(
+      el =>
+        new Promise((resolve, reject) => {
+          console.log("--->", { lat: el.lat, lng: el.lng });
+          const inDB =
+            el._id || existed.some(ex => ex.lat === el.lat && ex.lng === el.lng);
+          if (inDB) return resolve(); //go to next element
+          const location = new Location(el);
+          location.save((err, loc) => {
+            if (err) {
+              console.log("cannot save location", err.message);
+              return reject(next(err));
+            }
+            resolve(saved.push(loc));
+          });
+        })
+    );
+    Promise.all(promises).then(e => {
+      console.log("saved", saved);
+      res.send(saved);
     });
-    res.send(saved);
   }
 
   async getUserLocations(req, res, next) {
