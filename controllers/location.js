@@ -13,20 +13,20 @@ class LocationController {
   async saveNewLocations(req, res, next) {
     if (!req.body.locations) return next(400);
     const reqLocations = req.body.locations;
-    const saved = [];
+    const saved = []; //logs
     const userLocations = await Location.find({
       user_id: reqLocations[0].user_id
     });
     let existed = userLocations.map(el => {
       return { lat: el["lat"], lng: el["lng"] };
     });
-    console.log("existed", existed);
     const promises = reqLocations.map(
       el =>
         new Promise((resolve, reject) => {
-          console.log("--->", { lat: el.lat, lng: el.lng });
+          // console.log("--->", { lat: el.lat, lng: el.lng });
           const inDB =
-            el._id || existed.some(ex => ex.lat === el.lat && ex.lng === el.lng);
+            el._id ||
+            existed.some(ex => ex.lat === el.lat && ex.lng === el.lng);
           if (inDB) return resolve(); //go to next element
           const location = new Location(el);
           location.save((err, loc) => {
@@ -39,7 +39,7 @@ class LocationController {
         })
     );
     Promise.all(promises).then(e => {
-      console.log("saved", saved);
+      console.log("saved", saved); //logs
       res.send(saved);
     });
   }
@@ -51,18 +51,19 @@ class LocationController {
   }
 
   async update(req, res, next) {
-    const location = await Location.findById(req.params.id);
-    location
-      .update(payload)
-      .then((result, model) => {
-        res.json({
-          message: "success",
-          data: result
-        });
-      })
-      .catch(err => {
-        next(err);
-      });
+    if (!req.body) return next();
+    const update = req.body;
+    const location = await Location.findOneAndUpdate(
+      {
+        lat: update.lat,
+        lng: update.lng,
+        user_id: update.user_id
+      },
+      update,
+      e => console.log("update error", e)
+    );
+    // console.log("location", location, "req data", req.body);
+    res.send(location);
   }
 
   async delete(req, res, next) {
