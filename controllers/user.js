@@ -66,19 +66,17 @@ class UserController {
     if (isExist) return res.sendStatus(418);
 
     const encrypted = await bCrypt.hash(password, saltRounds);
-    console.log("encrypted", password, encrypted);
-
     const user = await new User({
       email: email,
       name: name,
       password: encrypted
     });
-
+    console.log("user", user);
     user.save(err => {
       if (err) {
         return next(err);
       }
-      res.send("User Created successfully");
+      res.send(true);
     });
   }
 
