@@ -16,7 +16,6 @@ class UserController {
   async check(req, res, next) {
     const user = await User.find(e => {});
     const location = await Location.find(err => {
-      // if (err) return res.status(e.status).send(e.message);
     });
 
     res.send({ users: user, locs: location });
@@ -26,12 +25,10 @@ class UserController {
     const user = await User.findOne({
       email: req.body.email
     });
-    // console.log("user", user)
     if (!user) {
       next(404);
     } else {
       checkPassword(req.body.password, user.password, (e, result) => {
-        // console.log("password is correct:", result);
         if (result) return res.status(200).send({ login: true, user: user });
 
         res.sendStatus(401);
@@ -50,12 +47,10 @@ class UserController {
         return;
       }
     );
-    // console.log("user", user)
     if (!user) {
       next(404);
     } else {
       console.log("user updated", user);
-      // res.status(200).send({user})
     }
   }
 
